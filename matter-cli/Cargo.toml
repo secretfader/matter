@@ -1,0 +1,18 @@
+[package]
+name = "matter-cli"
+version = "0.1.0-alpha1"
+authors = ["Nicholas Young <nyoung@uptime.ventures>"]
+description = "Command line interface to Matter."
+repository = "https://gitlab.com/secretfader/matter"
+keywords = ["frontmatter", "yaml", "json", "toml"]
+readme = "../README.md"
+license = "BSD-3-Clause"
+edition = "2018"
+
+[dependencies]
+matter = { path = "../matter", features = ["toml", "serde", "serde_yaml", "serde_json"] }
+structopt = "0.2.14"
+
+[[bin]]
+name = "matter"
+path = "src/main.rs"
