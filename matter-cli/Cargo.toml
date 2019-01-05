@@ -10,7 +10,7 @@ license = "BSD-3-Clause"
 edition = "2018"
 
 [dependencies]
-matter = { path = "../matter", features = ["toml", "serde", "serde_yaml", "serde_json"] }
+matter = { path = "../matter", features = ["toml", "yaml", "json"] }
 structopt = "0.2.14"
 
 [[bin]]
