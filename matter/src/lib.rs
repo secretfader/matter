@@ -28,7 +28,7 @@ extern crate serde_yaml;
 #[cfg(feature = "toml")]
 extern crate toml;
 
-use regex::{Regex, Captures};
+use regex::{Captures, Regex};
 
 lazy_static! {
     static ref DEFAULT_EXP: Regex =
