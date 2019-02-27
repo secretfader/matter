@@ -1,5 +1,10 @@
 # Matter
 
+[![CI Status
+Badge](https://gitlab.com/secretfader/matter/badges/master/build.svg)](https://gitlab.com/secretfader/matter)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Made by Fader](https://img.shields.io/badge/made_by-Fader.svg)](https://www.secretfader.com)
+
 A universal frontmatter parser and extractor, written in Rust.
 
 ## Installation
