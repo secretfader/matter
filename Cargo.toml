@@ -5,7 +5,7 @@ authors = ["Nicholas Young <nyoung@uptime.ventures>"]
 description = "Universal frontmatter parser."
 repository = "https://gitlab.com/secretfader/matter"
 keywords = ["frontmatter", "yaml", "json", "toml"]
-readme = "../README.md"
+readme = "README.md"
 license = "BSD-3-Clause"
 edition = "2018"
 
