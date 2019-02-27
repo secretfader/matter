@@ -20,7 +20,7 @@ lazy_static = "1.2.0"
 structopt = "0.2"
 
 [features]
-default = []
+default = ["toml", "json", "yaml"]
 json = ["serde", "serde_json"]
 yaml = ["serde", "serde_yaml"]
 
