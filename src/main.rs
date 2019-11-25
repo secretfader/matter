@@ -6,9 +6,6 @@
 // Otherwise, visit https://opensource.org to acquire
 // a copy.
 
-extern crate matter;
-extern crate structopt;
-
 use std::{env::current_dir, fs::read_to_string};
 use structopt::StructOpt;
 

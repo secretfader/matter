@@ -16,23 +16,12 @@
 //! and provide conventions for serializing Rust data
 //! types into TOML, YAML, and JSON frontmatter formats.
 
-#[macro_use]
-extern crate lazy_static;
-extern crate regex;
-#[cfg(feature = "serde")]
-extern crate serde;
-#[cfg(feature = "json")]
-extern crate serde_json;
-#[cfg(feature = "yaml")]
-extern crate serde_yaml;
-#[cfg(feature = "toml")]
-extern crate toml;
-
 use regex::{Captures, Regex};
 
-lazy_static! {
+lazy_static::lazy_static! {
     static ref DEFAULT_EXP: Regex =
         Regex::new(r"^[[:space:]]*\-\-\-\r?\n((?s).*?(?-s))\-\-\-\r?\n?((?s).*(?-s))$").unwrap();
+    #[cfg(feature = "toml")]
     static ref TOML_EXP: Regex =
         Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap();
 }
