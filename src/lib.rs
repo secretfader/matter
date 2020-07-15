@@ -1,20 +1,16 @@
 // Copyright 2018 Nicholas Young (and contributors).
 // All rights reserved.
 //
-// Released under a 3-Clause BSD License.
-// You should have received a copy with this software.
-// Otherwise, visit https://opensource.org to acquire
-// a copy.
+// Released under a 3-Clause BSD License. You should have received a
+// copy with this software. Otherwise, visit https://opensource.org
+// to acquire a copy.
 
-//! Matter
+//! A universal frontmatter parser and extractor.
 //!
-//! A universal frontmatter parser and extractor,
-//! written in Rust.
-//!
-//! Provided with frontmatter format and delimiters,
-//! Matter is able to separate frontmatter from content,
-//! and provide conventions for serializing Rust data
-//! types into TOML, YAML, and JSON frontmatter formats.
+//! Provided with frontmatter format and delimiters, Matter is able to
+//! separate frontmatter from content. It provides processing for
+//! TOML, YAML, and JSON frontmatter payloads (and common delimiters
+//! for each format).
 
 use regex::{Captures, Regex};
 
@@ -26,9 +22,8 @@ lazy_static::lazy_static! {
         Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap();
 }
 
-/// Split a string (often resulting from reading in a file)
-/// into the frontmatter and content portions. Frontmatter
-/// block formats are detected and parsed automatically.
+/// Split a string (often resulting from reading in a file) into
+/// frontmatter and content portions.
 pub fn extract(input: &str) -> Option<(String, String)> {
     let mut captures: Option<Captures> = None;
 
