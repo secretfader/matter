@@ -49,13 +49,12 @@ pub fn extract(input: &str) -> ExtractResult {
         captures = TOML_EXP.captures(input);
     }
 
-    match captures {
-        Some(cap) => {
-            let res = (cap[1].trim().to_string(), cap[2].trim().to_string());
-            Ok(Some(res))
-        },
-        _ => Ok(None),
+    if let Some(cap) = captures {
+        let res = (cap[1].trim().to_string(), cap[2].trim().to_string());
+        return Ok(Some(res))
     }
+
+    Ok(None)
 }
 
 #[cfg(test)]
