@@ -10,7 +10,6 @@ license = "BSD-3-Clause"
 edition = "2018"
 
 [dependencies]
-failure = "0.1.6"
 serde = { version = "1.0.103", optional = true }
 serde_json = { version = "1.0.42", optional = true }
 serde_yaml = { version = "0.8.11", optional = true }
