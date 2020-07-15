@@ -14,7 +14,7 @@ By default, matter is installed with support for TOML, YAML, and JSON
 frontmatter formats. However, you can override the defaults and install support
 for one specific format like so:
 
-`matter = { version = "0.1.0-alpha2", features = ["toml"] }`
+`matter = { version = "0.1.0-alpha3", features = ["toml"] }`
 
 ## Usage
 
@@ -32,11 +32,11 @@ See [the docs](https://docs.rs/matter) for more examples.
 ## CLI
 
 Matter is also distributed as a command line application. Install (`cargo
-install matter --version 0.1.0-alpha2`) and run to inspect any file's frontmatter:
+install matter --version 0.1.0-alpha3`) and run to inspect any file's frontmatter:
 
 `matter path/to/content.md`
 
 ## License
 
-Copyright 2018 Nicholas Young, All rights reserved. Released under a [3-Clause
-BSD License](LICENSE).
+Copyright 2018 Nicholas Young, All rights reserved. Released under
+a [3-Clause BSD License](LICENSE).
