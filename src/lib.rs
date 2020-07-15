@@ -7,10 +7,9 @@
 
 //! A universal frontmatter parser and extractor.
 //!
-//! Provided with frontmatter format and delimiters, Matter is able to
-//! separate frontmatter from content. It provides processing for
-//! TOML, YAML, and JSON frontmatter payloads (and common delimiters
-//! for each format).
+//! Provided with input data, Matter is able to separate frontmatter
+//! from content. Common delimiters for supported formats are also
+//! predefined.
 
 use regex::{Captures, Regex};
 
@@ -22,14 +21,14 @@ lazy_static::lazy_static! {
         Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap();
 }
 
+/// Type alias for fallible extraction operations.
 pub type ExtractResult<T = Option<(String, String)>> = std::result::Result<T, crate::Error>;
 
+/// Errors that may occur during use of this crate.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("Length of input is zero")]
     InvalidLength,
-    #[error("Invalid metadata format")]
-    InvalidFrontmatter,
 }
 
 /// Split a string (often resulting from reading in a file) into
@@ -81,7 +80,7 @@ mod tests {
     }
 
     #[test]
-    fn extract_yaml() {
+    fn extract_basic_yaml() {
         let contents = r#"
         ---
         title: YAML Frontmatter
@@ -100,7 +99,7 @@ mod tests {
     }
 
     #[test]
-    fn extract_extended_yaml() {
+    fn extract_unquoted_yaml() {
         let contents = r#"
         ---
         title: Yaml Frontmatter --- Revenge of the Unquoted Strings
@@ -119,7 +118,7 @@ mod tests {
     }
 
     #[test]
-    fn extract_extended_yaml_two() {
+    fn extract_multiline_yaml() {
         let contents = r#"
         ---
         text: |
@@ -138,5 +137,29 @@ mod tests {
             Nested multiline content, which may---contain loosely-formatted text."#;
         assert_eq!(f, substr);
         assert_eq!(c, "This is some content.");
+    }
+
+    #[test]
+    fn extract_nested_yaml() {
+        let contents = r#"
+        ---
+        availability: public
+        when:
+          start: 1471/3/28 MTR 4::22
+          duration: 0::30
+        date: 2012-02-18
+        title: Rutejìmo
+        ---
+
+        Text
+        "#;
+
+        let (f, c) = match extract(contents).unwrap() {
+            Some(res) => res,
+            _ => panic!(),
+        };
+
+        assert_ne!(f.len(), 0);
+        assert_eq!(c, "Text");
     }
 }
