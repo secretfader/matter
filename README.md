@@ -24,7 +24,7 @@ with minimal overhead, by only allocating as necessary.
 
 ```rust
 let input = std::fs::read_to_string("./path/to/content.md").unwrap();
-let (matter, content) = matter::extract(&input);
+let Some((matter, content)) = matter::extract(&input).unwrap();
 ```
 
 See [the docs](https://docs.rs/matter) for more examples.
