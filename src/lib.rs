@@ -16,7 +16,7 @@ use regex::{Captures, Regex};
 
 lazy_static::lazy_static! {
     static ref DEFAULT_EXP: Regex =
-        Regex::new(r"^[[:space:]]*\-\-\-\r?\n((?s).*?(?-s))\-\-\-\r?\n?((?s).*(?-s))$").unwrap();
+        Regex::new(r"^[[:space:]]*\-\-\-\r?\n((?s).*?(?-s))\-\-\-\r?\n((?s).*(?-s))$").unwrap();
     #[cfg(feature = "toml")]
     static ref TOML_EXP: Regex =
         Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap();
@@ -80,6 +80,47 @@ mod tests {
         };
 
         assert_eq!(f, "title: YAML Frontmatter");
+        assert_eq!(c, "This is some content.");
+    }
+
+    #[test]
+    fn extract_extended_yaml() {
+        let contents = r#"
+        ---
+        title: Yaml Frontmatter --- Revenge of the Unquoted Strings
+        ---
+
+        This is some content.
+        "#;
+
+        let (f, c) = match extract(contents) {
+            Some((f, c)) => (f, c),
+            _ => panic!(),
+        };
+
+        assert_eq!(f, "title: Yaml Frontmatter --- Revenge of the Unquoted Strings");
+        assert_eq!(c, "This is some content.");
+    }
+
+    #[test]
+    fn extract_extended_yaml_two() {
+        let contents = r#"
+        ---
+        text: |
+            Nested multiline content, which may---contain loosely-formatted text.
+        ---
+
+        This is some content.
+        "#;
+
+        let (f, c) = match extract(contents) {
+            Some((f, c)) => (f, c),
+            _ => panic!(),
+        };
+
+        let substr = r#"text: |
+            Nested multiline content, which may---contain loosely-formatted text."#;
+        assert_eq!(f, substr);
         assert_eq!(c, "This is some content.");
     }
 }
