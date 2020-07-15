@@ -22,9 +22,23 @@ lazy_static::lazy_static! {
         Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap();
 }
 
+pub type ExtractResult<T = Option<(String, String)>> = std::result::Result<T, crate::Error>;
+
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error("Length of input is zero")]
+    InvalidLength,
+    #[error("Invalid metadata format")]
+    InvalidFrontmatter,
+}
+
 /// Split a string (often resulting from reading in a file) into
 /// frontmatter and content portions.
-pub fn extract(input: &str) -> Option<(String, String)> {
+pub fn extract(input: &str) -> ExtractResult {
+    if input.len() == 0 {
+        return Err(Error::InvalidLength)
+    }
+
     let mut captures: Option<Captures> = None;
 
     if DEFAULT_EXP.is_match(input) {
@@ -36,8 +50,11 @@ pub fn extract(input: &str) -> Option<(String, String)> {
     }
 
     match captures {
-        Some(cap) => Some((cap[1].trim().to_string(), cap[2].trim().to_string())),
-        _ => None,
+        Some(cap) => {
+            let res = (cap[1].trim().to_string(), cap[2].trim().to_string());
+            Ok(Some(res))
+        },
+        _ => Ok(None),
     }
 }
 
@@ -55,8 +72,8 @@ mod tests {
         This is some content.
         "#;
 
-        let (f, c) = match extract(contents) {
-            Some((f, c)) => (f, c),
+        let (f, c) = match extract(contents).unwrap() {
+            Some(res) => res,
             _ => panic!(),
         };
 
@@ -74,8 +91,8 @@ mod tests {
         This is some content.
         "#;
 
-        let (f, c) = match extract(contents) {
-            Some((f, c)) => (f, c),
+        let (f, c) = match extract(contents).unwrap() {
+            Some(res) => res,
             _ => panic!(),
         };
 
@@ -93,8 +110,8 @@ mod tests {
         This is some content.
         "#;
 
-        let (f, c) = match extract(contents) {
-            Some((f, c)) => (f, c),
+        let (f, c) = match extract(contents).unwrap() {
+            Some(res) => res,
             _ => panic!(),
         };
 
@@ -113,8 +130,8 @@ mod tests {
         This is some content.
         "#;
 
-        let (f, c) = match extract(contents) {
-            Some((f, c)) => (f, c),
+        let (f, c) = match extract(contents).unwrap() {
+            Some(res) => res,
             _ => panic!(),
         };
 

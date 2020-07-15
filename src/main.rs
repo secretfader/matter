@@ -10,17 +10,18 @@ use structopt::StructOpt;
 
 fn main() -> std::io::Result<()> {
     let opts = CLI::from_args();
+    let path = current_dir()?.join(opts.input);
+    let data = read_to_string(path)?;
 
-    let mut path = current_dir()?;
-    path.push(opts.input);
-
-    let contents = read_to_string(path)?;
-    match matter::extract(&contents) {
-        Some((matter, content)) => {
-            println!("{:?} {:?}", matter, content);
-        }
-        _ => {}
-    }
+    match matter::extract(&data) {
+        Err(e) => {
+            eprintln!("{}", e);
+        },
+        Ok(Some((m, t))) => {
+            println!("{} {}", m, t);
+        },
+        _ => {},
+    };
 
     Ok(())
 }
