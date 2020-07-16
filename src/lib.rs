@@ -16,28 +16,13 @@ use regex::{Captures, Regex};
 lazy_static::lazy_static! {
     static ref DEFAULT_EXP: Regex =
         Regex::new(r"^[[:space:]]*\-\-\-\r?\n((?s).*?(?-s))\-\-\-\r?\n((?s).*(?-s))$").unwrap();
-    #[cfg(feature = "toml")]
     static ref TOML_EXP: Regex =
         Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n((?s).*(?-s))$").unwrap();
 }
 
-/// Type alias for fallible extraction operations.
-pub type ExtractResult<T = Option<(String, String)>> = std::result::Result<T, crate::Error>;
-
-/// Errors that may occur during use of this crate.
-#[derive(Debug, thiserror::Error)]
-pub enum Error {
-    #[error("Length of input is zero")]
-    InvalidLength,
-}
-
 /// Split a string (often resulting from reading in a file) into
 /// frontmatter and content portions.
-pub fn extract(input: &str) -> ExtractResult {
-    if input.len() == 0 {
-        return Err(Error::InvalidLength)
-    }
-
+pub fn matter(input: &str) -> Option<(String, String)> {
     let mut captures: Option<Captures> = None;
 
     if DEFAULT_EXP.is_match(input) {
@@ -50,32 +35,35 @@ pub fn extract(input: &str) -> ExtractResult {
 
     if let Some(cap) = captures {
         let res = (cap[1].trim().to_string(), cap[2].trim().to_string());
-        return Ok(Some(res))
+        return Some(res)
     }
 
-    Ok(None)
+    None
 }
 
 #[cfg(test)]
 mod tests {
-    use super::extract;
+    use super::matter;
 
     #[test]
     fn extract_toml() {
         let contents = r#"
         +++
         title = "TOML Frontmatter"
+        list = [
+            "Of",
+            "Things",
+        ]
+        [[assets]]
+        contentType = "audio/mpeg"
         +++
 
         This is some content.
         "#;
 
-        let (f, c) = match extract(contents).unwrap() {
-            Some(res) => res,
-            _ => panic!(),
-        };
+        let (f, c) = matter(contents).unwrap();
 
-        assert_eq!(f, "title = \"TOML Frontmatter\"");
+        assert_ne!(f.len(), 0);
         assert_eq!(c, "This is some content.");
     }
 
@@ -89,10 +77,7 @@ mod tests {
         This is some content.
         "#;
 
-        let (f, c) = match extract(contents).unwrap() {
-            Some(res) => res,
-            _ => panic!(),
-        };
+        let (f, c) = matter(contents).unwrap();
 
         assert_eq!(f, "title: YAML Frontmatter");
         assert_eq!(c, "This is some content.");
@@ -108,10 +93,7 @@ mod tests {
         This is some content.
         "#;
 
-        let (f, c) = match extract(contents).unwrap() {
-            Some(res) => res,
-            _ => panic!(),
-        };
+        let (f, c) = matter(contents).unwrap();
 
         assert_eq!(f, "title: Yaml Frontmatter --- Revenge of the Unquoted Strings");
         assert_eq!(c, "This is some content.");
@@ -128,10 +110,7 @@ mod tests {
         This is some content.
         "#;
 
-        let (f, c) = match extract(contents).unwrap() {
-            Some(res) => res,
-            _ => panic!(),
-        };
+        let (f, c) = matter(contents).unwrap();
 
         let substr = r#"text: |
             Nested multiline content, which may---contain loosely-formatted text."#;
@@ -154,10 +133,7 @@ mod tests {
         Text
         "#;
 
-        let (f, c) = match extract(contents).unwrap() {
-            Some(res) => res,
-            _ => panic!(),
-        };
+        let (f, c) = matter(contents).unwrap();
 
         assert_ne!(f.len(), 0);
         assert_eq!(c, "Text");

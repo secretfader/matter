@@ -13,11 +13,8 @@ fn main() -> std::io::Result<()> {
     let path = current_dir()?.join(opts.input);
     let data = read_to_string(path)?;
 
-    match matter::extract(&data) {
-        Err(e) => {
-            eprintln!("{}", e);
-        },
-        Ok(Some((m, t))) => {
+    match matter::matter(&data) {
+        Some((m, t)) => {
             println!("{} {}", m, t);
         },
         _ => {},
