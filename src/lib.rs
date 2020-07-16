@@ -18,7 +18,7 @@ lazy_static::lazy_static! {
         Regex::new(r"^[[:space:]]*\-\-\-\r?\n((?s).*?(?-s))\-\-\-\r?\n((?s).*(?-s))$").unwrap();
     #[cfg(feature = "toml")]
     static ref TOML_EXP: Regex =
-        Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap();
+        Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n((?s).*(?-s))$").unwrap();
 }
 
 /// Type alias for fallible extraction operations.
