@@ -16,6 +16,16 @@ use regex::{Captures, Regex};
 lazy_static::lazy_static! {
     static ref DEFAULT_EXP: Regex =
         Regex::new(r"^[[:space:]]*\-\-\-\r?\n((?s).*?(?-s))\-\-\-\r?\n((?s).*(?-s))$").unwrap();
+}
+
+#[cfg(feature = "yaml")]
+lazy_static::lazy_static! {
+    static ref DOT_EXP: Regex =
+        Regex::new(r"^[[:space:]]*\.\.\.\r?\n((?s).*?(?-s))\.\.\.\r?\n((?s).*(?-s))$").unwrap();
+}
+
+#[cfg(feature = "toml")]
+lazy_static::lazy_static! {
     static ref TOML_EXP: Regex =
         Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n((?s).*(?-s))$").unwrap();
 }
@@ -29,13 +39,19 @@ pub fn matter(input: &str) -> Option<(String, String)> {
         captures = DEFAULT_EXP.captures(input);
     }
 
+    #[cfg(feature = "yaml")]
+    if captures.is_none() && DOT_EXP.is_match(input) {
+        captures = DOT_EXP.captures(input);
+    }
+
+    #[cfg(feature = "toml")]
     if captures.is_none() && TOML_EXP.is_match(input) {
         captures = TOML_EXP.captures(input);
     }
 
     if let Some(cap) = captures {
         let res = (cap[1].trim().to_string(), cap[2].trim().to_string());
-        return Some(res)
+        return Some(res);
     }
 
     None
@@ -95,7 +111,10 @@ mod tests {
 
         let (f, c) = matter(contents).unwrap();
 
-        assert_eq!(f, "title: Yaml Frontmatter --- Revenge of the Unquoted Strings");
+        assert_eq!(
+            f,
+            "title: Yaml Frontmatter --- Revenge of the Unquoted Strings"
+        );
         assert_eq!(c, "This is some content.");
     }
 
@@ -106,6 +125,25 @@ mod tests {
         text: |
             Nested multiline content, which may---contain loosely-formatted text.
         ---
+
+        This is some content.
+        "#;
+
+        let (f, c) = matter(contents).unwrap();
+
+        let substr = r#"text: |
+            Nested multiline content, which may---contain loosely-formatted text."#;
+        assert_eq!(f, substr);
+        assert_eq!(c, "This is some content.");
+    }
+
+    #[test]
+    fn extract_ellipsis_yaml() {
+        let contents = r#"
+        ... 
+        text: |
+            Nested multiline content, which may---contain loosely-formatted text.
+        ...
 
         This is some content.
         "#;
