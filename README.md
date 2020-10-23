@@ -1,7 +1,7 @@
 # Matter
 
-[![CI Status
-Badge](https://gitlab.com/secretfader/matter/badges/master/pipeline.svg)](https://gitlab.com/secretfader/matter)
+![Continuous Integration](https://github.com/secretfader/matter/workflows/Continuous%20Integration/badge.svg)
+![Security Audit](https://github.com/secretfader/matter/workflows/Security%20Audit/badge.svg)
 [![Crates.io Downloads Badge](https://img.shields.io/crates/d/matter)](https://crates.io/crates/matter)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Made by Fader](https://img.shields.io/badge/made_by-Fader-purple.svg)](https://www.secretfader.com)
