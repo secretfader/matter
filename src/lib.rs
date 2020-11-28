@@ -22,7 +22,7 @@ lazy_static::lazy_static! {
 
 /// Split a string (often resulting from reading in a file) into
 /// frontmatter and content portions.
-pub fn matter(input: &str) -> Option<(String, String)> {
+pub fn matter(input: &str) -> Option<(&str, &str)> {
     let mut captures: Option<Captures> = None;
 
     if DEFAULT_EXP.is_match(input) {
@@ -34,11 +34,14 @@ pub fn matter(input: &str) -> Option<(String, String)> {
     }
 
     if let Some(cap) = captures {
-        let res = (cap[1].trim().to_string(), cap[2].trim().to_string());
-        return Some(res)
+        let res = (
+            cap.get(1).expect("no group at index '1'").as_str().trim(),
+            cap.get(2).expect("no group at index '2'").as_str().trim(),
+        );
+        Some(res)
+    } else {
+        None
     }
-
-    None
 }
 
 #[cfg(test)]
