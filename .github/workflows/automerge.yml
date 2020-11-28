@@ -4,6 +4,12 @@ on:
   pull_request:
     types:
       - labeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
   check_suite:
     types:
       - completed
