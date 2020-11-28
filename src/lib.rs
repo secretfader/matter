@@ -35,14 +35,8 @@ pub fn matter(input: &str) -> Option<(&str, &str)> {
 
     if let Some(cap) = captures {
         let res = (
-            cap.get(1)
-                .map(|m| m.as_str())
-                .unwrap_or_else(|| panic!("no group at index '1'"))
-                .trim(),
-            cap.get(2)
-                .map(|m| m.as_str())
-                .unwrap_or_else(|| panic!("no group at index '2'"))
-                .trim(),
+            cap.get(1).expect("no group at index '1'").as_str().trim(),
+            cap.get(2).expect("no group at index '2'").as_str().trim(),
         );
         Some(res)
     } else {
